@@ -30,6 +30,7 @@ namespace Task3_4Tests
         [TestCase(3456432, ExpectedResult = 3462345)]
         [TestCase(10, ExpectedResult = -1)]
         [TestCase(20, ExpectedResult = -1)]
+        [TestCase(0, ExpectedResult = -1)]
         public int NextBiggerNumber_PositiveTests(int number)
         {
             return WorkingWithNumbers.NextBiggerNumber(number);

@@ -22,45 +22,54 @@ namespace Task3_4
             if (number < 0)
                 throw new ArgumentException();
 
-            string num = number.ToString();
-            byte[] arrDigit = new byte[num.Length];
+            string str = number.ToString();
+            string substr = GetSubstring(str);
 
-            for (int j = num.Length - 1; j > -1; j--)
-            {
-                arrDigit[j] = (byte)(number % 10);
-                number /= 10;
-            }
-
-            byte[] arrPartDigit = null;
-            byte buf = byte.MinValue;
-
-            int i = num.Length - 1;
-            for (; i > 0; i--)
-            {
-                if (arrDigit[i - 1] < arrDigit[i])
-                {
-                    buf = arrDigit[i - 1];
-                    arrPartDigit = new byte[num.Length - i];
-                    Array.Copy(arrDigit, i, arrPartDigit, 0, arrPartDigit.Length);
-                    Array.Sort(arrPartDigit);
-                    break;
-                }
-            }
-
-            if (i == 0) return -1;
+            if (string.IsNullOrEmpty(substr)) return -1;
             else
-            {
-                for (int j = 0; j < arrPartDigit.Length; j++)
-                    if (arrPartDigit[j] > buf)
-                    {
-                        arrDigit[i - 1] = arrPartDigit[j];
-                        arrPartDigit[j] = buf;
-                        Array.Copy(arrPartDigit, 0, arrDigit, i, arrPartDigit.Length);
-                        break;
-                    }
+                return int.Parse(str.Substring(0, str.Length - substr.Length) + PartOfNumber(substr));
+        }
 
-                return int.Parse(string.Concat(arrDigit.Take(num.Length)));
-            }
+        /// <summary>
+        /// This Method finds substring where we neet to replace elements.
+        /// </summary>
+        /// <param name="str">String which contains predetermained number.</param>
+        /// <returns>Substring if it is found else null.</returns>
+        private static string GetSubstring(string str)
+        {
+            int i = str.Length - 1;
+            for (; i > 0; i--)
+                if (str[i - 1] < str[i])
+                    return str.Substring(i - 1);
+            return null;
+        }
+
+        /// <summary>
+        /// This method makes second part of number.
+        /// </summary>
+        /// <param name="substr">Second part of string.</param>
+        /// <returns>Modified string.</returns>
+        private static string PartOfNumber(string substr)
+        {
+            char[] partStr = substr.ToArray();
+            Array.Sort(partStr, 1, partStr.Length - 1);
+            int index = Array.FindIndex(partStr, p => p > partStr[0]);
+
+            ChangeElements(partStr, index);
+
+            return new string(partStr);
+        }
+
+        /// <summary>
+        /// This Method replaces two elements in Array: 0 and index.
+        /// </summary>
+        /// <param name="partStr">Array of elements whuch are the second part of number.</param>
+        /// <param name="index">Index which we replace with 0 elemets of array.</param>
+        private static void ChangeElements(char[] partStr, int index)
+        {
+            char buf = partStr[index];
+            partStr[index] = partStr[0];
+            partStr[0] = buf;
         }
         #endregion
 
